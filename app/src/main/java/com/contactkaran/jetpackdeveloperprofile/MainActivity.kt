@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -63,22 +64,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-    val buttonClickedState = remember {
-        mutableStateOf(false)
+    val buttonClickedState = remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        DeveloperProfileCard(modifier = Modifier.size(50.dp))
+        Divider(modifier = Modifier.height(3.dp), color = Color.LightGray)
+        Button(modifier = Modifier.align(Alignment.CenterHorizontally),
+            onClick = { buttonClickedState.value = !buttonClickedState.value }
+        ) {
+            Text(
+                text = if (buttonClickedState.value) "Hide Demo Portfolio" else "Show Demo Portfolio",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
-    DeveloperProfileCard(Modifier.size(50.dp))
-    Divider(modifier = Modifier.height(3.dp))
-    DemoProjectList()
-    Button(onClick = {
-        buttonClickedState.value = !buttonClickedState.value
-    }) {
-        Text(
-            text = "Demo Portfolio",
-            style = MaterialTheme.typography.bodyLarge
-        )
+    if (buttonClickedState.value) {
+        DemoProjectList(buttonClickedState)
     }
-    if (buttonClickedState.value) DemoProjectList()
-    else Box {}
 }
 
 @Preview(showBackground = true)
@@ -93,20 +95,20 @@ fun DeveloperProfileCard(modifier: Modifier) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
+//            .fillMaxHeight()
     )
     {
         Card(
             modifier = Modifier
                 .width(200.dp)
-                .height(390.dp)
+//                .height(390.dp)
                 .padding(12.dp)
                 .background(color = Color.White),
             shape = RoundedCornerShape(corner = CornerSize(15.dp))
         )
         {
             Column(
-                modifier = Modifier.height(300.dp),
+                modifier = Modifier.height(250.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -173,10 +175,21 @@ private fun DeveloperContactInfo() {
 }
 
 @Composable
-fun DemoProjectList() {
+fun DemoProjectList(buttonClickedState: MutableState<Boolean>) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        DeveloperProfileCard(modifier = Modifier.size(30.dp))
+    }
+    Button(
+        onClick = { buttonClickedState.value = !buttonClickedState.value }
+    ) {
+        Text(
+            text = if (buttonClickedState.value) "Hide Demo Portfolio" else "Show Demo Portfolio",
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
     Box(
         modifier = Modifier
-            .fillMaxHeight()
+//            .fillMaxHeight()
             .fillMaxWidth()
             .padding(5.dp)
     ) {
@@ -217,8 +230,7 @@ fun Portfolio(projectDemoData: List<String>) {
                 modifier = Modifier
                     .padding(13.dp)
                     .fillMaxWidth(),
-                shape = RectangleShape,
-//                elevation = 4.dp
+                shape = RectangleShape
             ) {
                 Row(
                     modifier = Modifier
@@ -226,8 +238,7 @@ fun Portfolio(projectDemoData: List<String>) {
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(7.dp)
                 ) {
-                    DeveloperProfileCard(modifier = Modifier.size(50.dp))
-                    Column(
+                    Row(
                         modifier = Modifier
                             .padding(7.dp)
                             .align(alignment = CenterVertically)
